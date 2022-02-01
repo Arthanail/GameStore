@@ -28,7 +28,7 @@ namespace API.Services
                 _connection = factory.CreateConnection();
                 _channel = _connection.CreateModel();
                 
-                _channel.ExchangeDeclare(exchange: "trigger", type: ExchangeType.Direct);
+                _channel.ExchangeDeclare(exchange: "trigger", type: ExchangeType.Fanout);
 
                 _connection.ConnectionShutdown += RabbitMQ_ConnectionShutdown;
                 
@@ -46,12 +46,12 @@ namespace API.Services
 
             if (_connection.IsOpen)
             {
-                Console.WriteLine("Open connection, sending message...");
+                Console.WriteLine("--> Open connection, sending message...");
                 SendMessage(message);
             }
             else
             {
-                Console.WriteLine("Closed connection, not sending");
+                Console.WriteLine("--> Closed connection, not sending");
             }
         }
 
@@ -68,7 +68,7 @@ namespace API.Services
 
         public void Dispose()
         {
-            Console.WriteLine("Message Bus Disposed");
+            Console.WriteLine("--> Message Bus Disposed");
             if (_channel.IsOpen)
             {
                 _channel.Close();

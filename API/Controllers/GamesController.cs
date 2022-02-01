@@ -66,7 +66,7 @@ namespace API.Controllers
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Could not send async: {e.Message}");
+                Console.WriteLine($"--> Could not send async: {e.Message}");
             }
             return CreatedAtRoute(nameof(GetGameByIdAsync), new { Id = readGameDto.Id }, readGameDto);
         }
