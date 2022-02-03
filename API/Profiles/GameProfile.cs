@@ -1,4 +1,5 @@
-﻿using API.Dtos;
+﻿using API.Commands;
+using API.Dtos;
 using AutoMapper;
 using Domain.Entities;
 
@@ -8,9 +9,9 @@ namespace API.Profiles
     {
         public GameProfile()
         {
-            CreateMap<CreateGameDto, Game>();
             CreateMap<Game, ReadGameDto>();
-            CreateMap<UpdateGameDto, Game>();
+            CreateMap<CreateGameCommand, Game>();
+            CreateMap<UpdateGameCommand, Game>();
             CreateMap<ReadGameDto, PublishedGameDto>();
         }
     }

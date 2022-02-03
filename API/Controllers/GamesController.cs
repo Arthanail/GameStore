@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using API.Dtos;
+using API.Commands;
 using API.Queries;
-using API.Services;
-using AutoMapper;
-using Data;
-using Domain.Entities;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -15,77 +11,57 @@ namespace API.Controllers
     [Route("api/[controller]")]
     public class GamesController : ControllerBase
     {
-        private readonly IGameQueries _gameQueries;
-        private readonly IMapper _mapper;
-        private readonly IGameRepository _gameRepository;
-        private readonly IMessageBusClient _messageBusClient;
+        private readonly IMediator _mediator;
 
-        public GamesController(IGameQueries gameQueries, IMapper mapper, 
-            IGameRepository gameRepository, IMessageBusClient messageBusClient)
+        public GamesController(IMediator mediator)
         {
-            _gameQueries = gameQueries;
-            _mapper = mapper;
-            _gameRepository = gameRepository;
-            _messageBusClient = messageBusClient;
+            _mediator = mediator;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ReadGameDto>>> GetGamesAsync()
+        public async Task<IActionResult> GetGamesAsync()
         {
-            var games = await _gameQueries.GetGames();
+            var query = new GetGamesQuerie();
+            var games = await _mediator.Send(query);
             return Ok(games);
         }
         
         [HttpGet("{id}", Name = "GetGameByIdAsync")]
-        public async Task<ActionResult<ReadGameDto>> GetGameByIdAsync(int id)
+        public async Task<IActionResult> GetGameByIdAsync(Guid gameId)
         {
-            var game = await _gameQueries.GetGameById(id);
-            return Ok(game);
+            var query = new GetGameByIdQuerie(gameId);
+            var game = await _mediator.Send(query);
+            return game != null ? Ok(game) : NotFound();
         }
 
         [HttpGet]
         [Route("genre/{genre}")]
-        public async Task<ActionResult<IEnumerable<ReadGameDto>>> GetGamesByGenreAsync(string genre)
+        public async Task<IActionResult> GetGamesByGenreAsync(string genre)
         {
-            var games = await _gameQueries.GetGamesByGenre(genre);
-            return Ok(games);
+            var query = new GetGameByGenreQuerie(genre);
+            var games = await _mediator.Send(query);
+            return games != null ? Ok(games) : NotFound();
         }
 
         [HttpPost]
-        public async Task<ActionResult<CreateGameDto>> AddGameAsync(CreateGameDto createGameDto)
+        public async Task<IActionResult> CreateGameAsync([FromBody] CreateGameCommand command)
         {
-            var game = _mapper.Map<Game>(createGameDto);
-            await _gameRepository.AddGameAsync(game);
-
-            var readGameDto = _mapper.Map<ReadGameDto>(game);
-            try
-            {
-                var publishedGameDto = _mapper.Map<PublishedGameDto>(readGameDto);
-                publishedGameDto.Event = "Game_Published";
-                _messageBusClient.PublishedNewGame(publishedGameDto);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine($"--> Could not send async: {e.Message}");
-            }
-            return CreatedAtRoute(nameof(GetGameByIdAsync), new { Id = readGameDto.Id }, readGameDto);
+            var game = await _mediator.Send(command);
+            return CreatedAtRoute(nameof(GetGameByIdAsync), new { Id = game.Id }, game);
         }
  
         [HttpPut]
-        public async Task<ActionResult<UpdateGameDto>> UpdateGameAsync(UpdateGameDto updateGameDto)
+        public async Task<IActionResult> UpdateGameAsync([FromBody] UpdateGameCommand command)
         {
-            var game = _mapper.Map<Game>(updateGameDto);
-            await _gameRepository.UpdateGameAsync(game);
-
-            var readGameDto = _mapper.Map<ReadGameDto>(game);
-            return CreatedAtRoute(nameof(GetGameByIdAsync), new { Id = readGameDto.Id }, readGameDto);
+            var game = await _mediator.Send(command);
+            return game != null ? Ok(game) : NotFound();
         }
         
         [HttpDelete("{id}")]
-        public async Task<ActionResult<DeleteGameDto>> DeleteGameAsync(int id)
+        public async Task<IActionResult> DeleteGameAsync(DeleteGameCommand command)
         {
-            await _gameRepository.DeleteGameAsync(id);
-            return Ok();
+            var result = await _mediator.Send(command);
+            return result ? Ok() : NotFound();
         }
     }
 }

@@ -1,30 +1,34 @@
 using System;
-using API.EventProcessing;
-using API.Queries;
 using API.Services;
 using Data;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace API
 {
     public class Startup
     {
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+        private IConfiguration Configuration { get; }
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<StoreContext>(options => options.
-                UseSqlServer("Server=DESKTOP-U688BIV;Database=gameStore;Trusted_Connection=True;", b
+                UseSqlServer(Configuration["ConnectionString"], b
                 => b.MigrationsAssembly("API")));
+            
             services.AddScoped<IGameRepository, GameRepository>();
-            services.AddScoped<IGameQueries, GameQueries>();
             services.AddSingleton<IMessageBusClient, MessageBusClient>();
             
+            services.AddMediatR(typeof(Startup));
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             
             services.AddControllers();
-
-            services.AddSingleton<IEventProcessor, EventProcessor>();
         }
  
         public void Configure(IApplicationBuilder app)

@@ -1,8 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using API.Dtos;
+using MediatR;
 
-namespace API.Dtos
+namespace API.Commands
 {
-    public class CreateGameDto
+    public class CreateGameCommand : IRequest<ReadGameDto>
     {
         [Required]
         public string Title { get; set; }

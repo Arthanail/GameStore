@@ -1,8 +1,10 @@
 ﻿using System;
+using API.Dtos;
+using MediatR;
 
-namespace API.Dtos
+namespace API.Commands
 {
-    public class ReadGameDto
+    public class UpdateGameCommand : IRequest<ReadGameDto>
     {
         public Guid Id { get; set; }
         public string Title { get; set; }
