@@ -10,6 +10,8 @@ namespace API.Profiles
         public GameProfile()
         {
             CreateMap<Game, ReadGameDto>();
+            CreateMap<ReadGameDto, Game>();
+            CreateMap<DeleteGameCommand, Game>();
             CreateMap<CreateGameCommand, Game>();
             CreateMap<UpdateGameCommand, Game>();
             CreateMap<ReadGameDto, PublishedGameDto>();

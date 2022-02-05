@@ -4,13 +4,13 @@ using MediatR;
 
 namespace API.Commands
 {
-    public class CreateGameCommand : IRequest<ReadGameDto>
+    public record CreateGameCommand : IRequest<ReadGameDto>
     {
         [Required]
-        public string Title { get; set; }
+        public string Title { get; init; }
         [Required]
-        public string DevelopmentStudio { get; set; }
+        public string DevelopmentStudio { get; init; }
         [Required]
-        public string GameGenre { get; set; }
+        public string GameGenre { get; init; }
     }
 }

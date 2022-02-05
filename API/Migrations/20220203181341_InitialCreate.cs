@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace API.Migrations
 {
@@ -11,7 +10,8 @@ namespace API.Migrations
                 name: "Games",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DevelopmentStudio = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     GameGenre = table.Column<string>(type: "nvarchar(max)", nullable: false)

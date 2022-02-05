@@ -8,7 +8,6 @@ using AutoMapper;
 using Data;
 using Domain.Entities;
 using MediatR;
-
 namespace API.Handlers
 {
     public class CreateGameHandler : IRequestHandler<CreateGameCommand, ReadGameDto>
@@ -34,7 +33,6 @@ namespace API.Handlers
             try
             {
                 var publishedGameDto = _mapper.Map<PublishedGameDto>(readGameDto);
-                publishedGameDto.Event = "Game_Published";
                 _messageBusClient.PublishedNewGame(publishedGameDto);
             }
             catch (Exception e)

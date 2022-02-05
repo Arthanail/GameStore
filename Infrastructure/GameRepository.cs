@@ -21,9 +21,9 @@ namespace Data
             return await _context.Games.ToListAsync();
         }
 
-        public async Task<Game> GetGameByIdAsync(Guid id)
+        public async Task<Game> GetGameByIdAsync(int id)
         {
-            return await _context.Games.FindAsync(id);
+            return await _context.Games.Where(x => x.Id == id).FirstOrDefaultAsync();
         }
 
         public async Task<IEnumerable<Game>> GetGamesByGenreAsync(string genre)
@@ -43,14 +43,13 @@ namespace Data
             await Save();
         }
         
-        public async Task DeleteGameAsync(Guid id)
+        public async Task DeleteGameAsync(Game game)
         {
-            var game = _context.Games.Find(id);
             _context.Games.Remove(game);
             await Save();
         }
 
-        public async Task Save()
+        private async Task Save()
         {
             await _context.SaveChangesAsync();
         }

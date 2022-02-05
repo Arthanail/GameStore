@@ -1,11 +1,8 @@
-﻿using System;
-
-namespace API.Dtos
+﻿namespace API.Dtos
 {
-    public class PublishedGameDto
+    public record PublishedGameDto
     {
-        public Guid Id { get; set; }
-        public string Title { get; set; }
-        public string Event { get; set; }
+        public int Id { get; init; }
+        public string Title { get; init; }
     }
 }

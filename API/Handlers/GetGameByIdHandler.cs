@@ -23,7 +23,7 @@ namespace API.Handlers
             CancellationToken cancellationToken)
         {
             var game = await _gameRepository.GetGameByIdAsync(request.Id);
-            return _mapper.Map<ReadGameDto>(game);
+            return game == null ? null : _mapper.Map<ReadGameDto>(game);
         }
     }
 }

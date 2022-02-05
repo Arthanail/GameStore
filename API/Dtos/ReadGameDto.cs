@@ -1,12 +1,10 @@
-﻿using System;
-
-namespace API.Dtos
+﻿namespace API.Dtos
 {
-    public class ReadGameDto
+    public record ReadGameDto
     {
-        public Guid Id { get; set; }
-        public string Title { get; set; }
-        public string DevelopmentStudio { get; set; }
-        public string GameGenre { get; set; }
+        public int Id { get; init; }
+        public string Title { get; init; }
+        public string DevelopmentStudio { get; init; }
+        public string GameGenre { get; init; }
     }
 }

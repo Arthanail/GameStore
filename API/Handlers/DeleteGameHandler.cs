@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using API.Commands;
 using AutoMapper;
 using Data;
+using Domain.Entities;
 using MediatR;
 
 namespace API.Handlers
@@ -21,7 +22,8 @@ namespace API.Handlers
         public async Task<bool> Handle(DeleteGameCommand request, 
             CancellationToken cancellationToken)
         {
-            await _gameRepository.DeleteGameAsync(request.Id);
+            var game = _mapper.Map<Game>(request);
+            await _gameRepository.DeleteGameAsync(game);
             return true;
         }
     }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using API.Commands;
 using API.Queries;
 using MediatR;
@@ -21,16 +20,14 @@ namespace API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetGamesAsync()
         {
-            var query = new GetGamesQuerie();
-            var games = await _mediator.Send(query);
+            var games = await _mediator.Send(new GetGamesQuerie());
             return Ok(games);
         }
         
         [HttpGet("{id}", Name = "GetGameByIdAsync")]
-        public async Task<IActionResult> GetGameByIdAsync(Guid gameId)
+        public async Task<IActionResult> GetGameByIdAsync(int id)
         {
-            var query = new GetGameByIdQuerie(gameId);
-            var game = await _mediator.Send(query);
+            var game = await _mediator.Send(new GetGameByIdQuerie(id));
             return game != null ? Ok(game) : NotFound();
         }
 
@@ -38,8 +35,7 @@ namespace API.Controllers
         [Route("genre/{genre}")]
         public async Task<IActionResult> GetGamesByGenreAsync(string genre)
         {
-            var query = new GetGameByGenreQuerie(genre);
-            var games = await _mediator.Send(query);
+            var games = await _mediator.Send(new GetGameByGenreQuerie(genre));
             return games != null ? Ok(games) : NotFound();
         }
 
@@ -58,9 +54,9 @@ namespace API.Controllers
         }
         
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteGameAsync(DeleteGameCommand command)
+        public async Task<IActionResult> DeleteGameAsync(int id)
         {
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(new DeleteGameCommand(id));
             return result ? Ok() : NotFound();
         }
     }

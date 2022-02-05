@@ -4,7 +4,7 @@ using MediatR;
 
 namespace API.Queries
 {
-    public class GetGamesQuerie : IRequest<IEnumerable<ReadGameDto>>
+    public record GetGamesQuerie : IRequest<IEnumerable<ReadGameDto>>
     {
         
     }

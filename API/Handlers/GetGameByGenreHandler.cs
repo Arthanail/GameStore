@@ -24,7 +24,7 @@ namespace API.Handlers
             CancellationToken cancellationToken)
         {
             var games = await _gameRepository.GetGamesByGenreAsync(request.Genre);
-            return _mapper.Map<IEnumerable<ReadGameDto>>(games);
+            return games == null ? null : _mapper.Map<IEnumerable<ReadGameDto>>(games);
         }
     }
 }

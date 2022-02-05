@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Entities
 {
@@ -7,7 +6,7 @@ namespace Domain.Entities
     {
         [Key]
         [Required]
-        public Guid Id { get; private set; }
+        public int Id { get; private set; }
         [Required]
         public string Title { get; private set; }
         [Required]
